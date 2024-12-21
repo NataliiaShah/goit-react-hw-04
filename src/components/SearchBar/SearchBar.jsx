@@ -7,16 +7,16 @@ const SearchBar = ({ onSubmit }) => {
     if (!values.searchQuery.trim()) {
       toast.error('Please enter a search term.');
     } else {
-      onSubmit(values.searchQuery);
-      resetForm(); 
+      onSubmit(values.searchQuery);  // Передаємо запит в батьківський компонент
+      resetForm();
     }
   };
 
   return (
     <header>
       <Formik
-        initialValues={{ searchQuery: '' }} 
-        onSubmit={handleSubmit} 
+        initialValues={{ searchQuery: '' }}
+        onSubmit={handleSubmit}
       >
         <Form id={nanoid()}>
           <Field
