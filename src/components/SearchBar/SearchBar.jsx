@@ -1,52 +1,36 @@
 import { Formik, Form, Field } from 'formik';
-import toast from "react-hot-toast";
+import { nanoid } from 'nanoid';
+import { toast } from 'react-hot-toast';
 
 const SearchBar = ({ onSubmit }) => {
-  return (
-    <>
-      <header>
-        <Formik 
-          initialValues={{ query: "" }} 
-          validate={(values) => {
-            const errors = {};
-            if (!values.query) {
-              errors.query = "Please enter a search term to find images."; 
-            }
-            return errors;
-          }}
-          onSubmit={(values, actions) => {
-            if (!values.query.trim()) {
-              toast.error("Please enter a search term to find images.");
-              actions.setSubmitting(false);
-              return;
-            }
+  const handleSubmit = (values, { resetForm }) => {
+    if (!values.searchQuery.trim()) {
+      toast.error('Please enter a search term.');
+    } else {
+      onSubmit(values.searchQuery);
+      resetForm(); 
+    }
+  };
 
-            onSubmit(values.query); 
-            actions.resetForm(); 
-          }}
-        >
-          {({ values, handleChange, handleSubmit, errors, touched, isSubmitting }) => (
-            <Form onSubmit={handleSubmit}>
-              <Field
-                type="text"
-                name="query"
-                value={values.query}
-                onChange={handleChange}
-                autoComplete="off"
-                autoFocus
-                placeholder="Search images and photos"
-              />
-              {touched.query && errors.query && (
-                <div style={{ color: "red" }}>{errors.query}</div> 
-              )}
-              <button type="submit" disabled={isSubmitting}>Search</button>
-            </Form>
-          )}
-        </Formik>
-      </header>
-    </>
+  return (
+    <header>
+      <Formik
+        initialValues={{ searchQuery: '' }} 
+        onSubmit={handleSubmit} 
+      >
+        <Form id={nanoid()}>
+          <Field
+            type="text"
+            name="searchQuery"
+            autoComplete="off"
+            autoFocus
+            placeholder="Search images and photos"
+          />
+          <button type="submit">Search</button>
+        </Form>
+      </Formik>
+    </header>
   );
 };
 
 export default SearchBar;
-
