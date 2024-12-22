@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
 import ImageCard from '../ImageCard/ImageCard';
+import Loader from '../Loader/Loader';
 
 const ImageGallery = ({ query }) => {
   const [images, setImages] = useState([]); 
@@ -12,6 +13,7 @@ const ImageGallery = ({ query }) => {
     if (!query) return;
 
     const fetchImages = async () => {
+      console.log('Завантаження почалося!');
       setLoading(true);
       setError(null);
 
@@ -29,7 +31,8 @@ const ImageGallery = ({ query }) => {
         console.error(err); 
         setError('Помилка завантаження зображень.');
       } finally {
-        setLoading(false);
+          setLoading(false);
+          console.log('Завантаження завершено!');
       }
     };
 
@@ -49,13 +52,16 @@ const ImageGallery = ({ query }) => {
   }
 
   return (
-    <ul>
-      {images.map((image) => (
-        <li key={nanoid()}> 
-          <ImageCard image={image} />
-        </li>
-      ))}
-    </ul>
+    <div>
+      <ul>
+        {images.map((image) => (
+          <li key={nanoid()}>
+            <ImageCard image={image} />
+          </li>
+        ))}
+      </ul>
+      {loading && <Loader/>}
+    </div>
   );
 };
 
