@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
-import ImageCard from '../ImageCard/ImageCard';
-import Loader from '../Loader/Loader';
-import ErrorMessage from '../ErrorMessage/ErrorMessage';
-import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
+import ImageCard from "../ImageCard/ImageCard";
+import Loader from "../Loader/Loader";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
+import { FaArrowUp } from 'react-icons/fa'; 
 
 const ImageGallery = ({ query }) => {
-  const [images, setImages] = useState([]); 
-  const [loading, setLoading] = useState(false); 
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
-  const [cancelTokenSource, setCancelTokenSource] = useState(null);  
+  const [cancelTokenSource, setCancelTokenSource] = useState(null);
+  const [showScrollToTop, setShowScrollToTop] = useState(false); 
 
   useEffect(() => {
     if (!query) return;
@@ -30,7 +32,7 @@ const ImageGallery = ({ query }) => {
             query: query,
             page: page,
             per_page: 12,
-            client_id: '2N1SVW6p-h7zTwIX34mVl0ZMU6_-eMpnOii3YhNjMn0'
+            client_id: '2N1SVW6p-h7zTwIX34mVl0ZMU6_-eMpnOii3YhNjMn0',
           },
           cancelToken: source.token,
         });
@@ -52,17 +54,43 @@ const ImageGallery = ({ query }) => {
 
     fetchImages();
 
-    
     return () => {
       if (cancelTokenSource) {
         cancelTokenSource.cancel('Запит скасовано через зміну пошукового запиту.');
       }
     };
-  }, [query, page]); 
+  }, [query, page]);
 
   const loadMoreImages = () => {
-    setPage((prevPage) => prevPage + 1); 
+    setPage((prevPage) => prevPage + 1);
   };
+
+ 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
+  
+  const handleScroll = () => {
+    if (window.scrollY > 300) {
+      setShowScrollToTop(true);
+    } else {
+      setShowScrollToTop(false);
+    }
+  };
+
+  useEffect(() => {
+   
+    window.addEventListener('scroll', handleScroll);
+
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   if (error) {
     return <ErrorMessage message={error} />;
@@ -78,11 +106,18 @@ const ImageGallery = ({ query }) => {
         ))}
       </ul>
 
-     
       {loading && <Loader />}
 
-      
       {images.length > 0 && !loading && <LoadMoreBtn onClick={loadMoreImages} />}
+
+      
+      {showScrollToTop && (
+        <button
+          onClick={scrollToTop}
+        >
+          <FaArrowUp />
+        </button>
+      )}
     </div>
   );
 };
