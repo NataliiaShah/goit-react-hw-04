@@ -1,37 +1,24 @@
-import { useEffect } from 'react';
 import Modal from 'react-modal';
 
-const ImageModal = ({ isOpen, closeModal, image }) => {
-  useEffect(() => {
-    // Функція для закриття модалки при натисканні ESC
-    const handleKeydown = (e) => {
-      if (e.key === 'Escape') {
-        closeModal();
-      }
-    };
+Modal.setAppElement('#root');
 
-    document.addEventListener('keydown', handleKeydown);
-
-    // Очистка прослуховувача події при розмонтуванні
-    return () => {
-      document.removeEventListener('keydown', handleKeydown);
-    };
-  }, [closeModal]);
+const ImageModal = ({ isOpen, closeModal, imageUrl, imageAlt }) => {
+  console.log('isOpen:', isOpen, 'imageUrl:', imageUrl, 'imageAlt:', imageAlt); 
 
   return (
     <Modal
-      isOpen={isOpen}
+      iisOpen={isOpen}
       onRequestClose={closeModal}
-      contentLabel="Image Modal"
-      ariaHideApp={false} // Для використання без стандартної помилки React Modal
-      className="modal"
-      overlayClassName="overlay"
+      ariaHideApp={false} 
+      shouldCloseOnOverlayClick={true} 
+      onKeyDown={(e) => e.key === 'Escape' && closeModal()} 
     >
-      <div >
-        <button  onClick={closeModal}>
-          &times;
-        </button>
-        <img src={image?.urls?.full} alt={image?.alt_description}/>
+      <div>
+        {imageUrl ? (
+          <img src={imageUrl} alt={imageAlt} style={{ width: '100%', height: 'auto' }} />
+        ) : (
+          <p>Зображення не доступне.</p>
+        )}
       </div>
     </Modal>
   );

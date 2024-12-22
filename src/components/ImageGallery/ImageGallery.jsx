@@ -6,6 +6,7 @@ import ImageCard from "../ImageCard/ImageCard";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
+import ImageModal from '../ImageModal/ImageModal';
 
 
   const ImageGallery = ({ query }) => {
@@ -13,9 +14,9 @@ import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
+  const [selectedImage, setSelectedImage] = useState(null);  
   const [showScrollToTop, setShowScrollToTop] = useState(false);
 
-  
   const fetchImages = async () => {
     if (!query) return;
 
@@ -23,7 +24,7 @@ import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
     setError(null);
 
     try {
-      const response = await axios.get(`https://api.unsplash.com/search/photos`, {
+      const response = await axios.get('https://api.unsplash.com/search/photos', {
         params: {
           query: query,
           page: page,
@@ -32,8 +33,8 @@ import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
         },
       });
 
+      console.log('API Response:', response.data);  
       if (response.status === 200) {
-        
         setImages((prevImages) => (page === 1 ? response.data.results : [...prevImages, ...response.data.results]));
       }
     } catch (err) {
@@ -44,25 +45,21 @@ import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
     }
   };
 
-  
   useEffect(() => {
-    
     if (query) {
       setImages([]); 
-      setPage(1); 
+      setPage(1);
     }
-  }, [query]); 
+  }, [query]);
 
-  
   useEffect(() => {
-    fetchImages(); 
+    fetchImages();
   }, [query, page]);
-  
+
   const loadMoreImages = () => {
-    setPage((prevPage) => prevPage + 1); 
+    setPage((prevPage) => prevPage + 1);
   };
 
-  
   const handleScroll = () => {
     if (window.scrollY > 300) {
       setShowScrollToTop(true);
@@ -72,20 +69,26 @@ import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
   };
 
   useEffect(() => {
-    
     window.addEventListener('scroll', handleScroll);
-
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
-  
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
     });
+  };
+
+  const openModal = (imageUrl, imageAlt) => {
+    console.log("Opening modal with:", imageUrl, imageAlt);  
+    setSelectedImage({ imageUrl, imageAlt });
+  };
+   
+  const closeModal = () => {
+    setSelectedImage(null);
   };
 
   if (error) {
@@ -97,23 +100,25 @@ import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
       <ul>
         {images.map((image) => (
           <li key={nanoid()}>
-            <ImageCard image={image} />
+            <ImageCard image={image} onClick={() => openModal(image.urls.full, image.alt_description)} />
           </li>
         ))}
       </ul>
 
       {loading && <Loader />}
 
-      
       {images.length > 0 && !loading && <LoadMoreBtn onClick={loadMoreImages} />}
 
-      
       {showScrollToTop && (
-        <button
-          onClick={scrollToTop}>
-          <FaArrowUp />
-        </button>
+        <button onClick={scrollToTop}><FaArrowUp/></button>
       )}
+
+      <ImageModal
+        isOpen={selectedImage !== null}
+        closeModal={closeModal}
+        imageUrl={selectedImage?.imageUrl || ''}
+        imageAlt={selectedImage?.imageAlt || ''}
+      />
     </div>
   );
 };
