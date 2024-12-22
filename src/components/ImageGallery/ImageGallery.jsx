@@ -3,14 +3,21 @@ import axios from 'axios';
 import { nanoid } from 'nanoid';
 import ImageCard from '../ImageCard/ImageCard';
 import Loader from '../Loader/Loader';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
+import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 
 const ImageGallery = ({ query }) => {
   const [images, setImages] = useState([]); 
   const [loading, setLoading] = useState(false); 
-  const [error, setError] = useState(null); 
+  const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [cancelTokenSource, setCancelTokenSource] = useState(null);  
 
   useEffect(() => {
     if (!query) return;
+
+    const source = axios.CancelToken.source();
+    setCancelTokenSource(source);
 
     const fetchImages = async () => {
       console.log('Завантаження почалося!');
@@ -21,34 +28,44 @@ const ImageGallery = ({ query }) => {
         const response = await axios.get(`https://api.unsplash.com/search/photos`, {
           params: {
             query: query,
+            page: page,
             per_page: 12,
             client_id: '2N1SVW6p-h7zTwIX34mVl0ZMU6_-eMpnOii3YhNjMn0'
-          }
+          },
+          cancelToken: source.token,
         });
 
-        setImages(response.data.results);
+        if (response.status === 200) {
+          setImages((prevImages) => (page === 1 ? response.data.results : [...prevImages, ...response.data.results]));
+        }
       } catch (err) {
-        console.error(err); 
-        setError('Помилка завантаження зображень.');
+        if (axios.isCancel(err)) {
+          console.log('Запит скасовано:', err.message);
+        } else {
+          console.error(err);
+          setError('Помилка завантаження зображень. Спробуйте ще раз.');
+        }
       } finally {
-          setLoading(false);
-          console.log('Завантаження завершено!');
+        setLoading(false);
       }
     };
 
     fetchImages();
-  }, [query]);
 
-  if (loading) {
-    return <p>Завантаження...</p>;
-  }
+    
+    return () => {
+      if (cancelTokenSource) {
+        cancelTokenSource.cancel('Запит скасовано через зміну пошукового запиту.');
+      }
+    };
+  }, [query, page]); 
+
+  const loadMoreImages = () => {
+    setPage((prevPage) => prevPage + 1); 
+  };
 
   if (error) {
-    return <p>{error}</p>;
-  }
-
-  if (images.length === 0) {
-    return <p>Нічого не знайдено за запитом: {query}</p>;
+    return <ErrorMessage message={error} />;
   }
 
   return (
@@ -60,7 +77,12 @@ const ImageGallery = ({ query }) => {
           </li>
         ))}
       </ul>
-      {loading && <Loader/>}
+
+     
+      {loading && <Loader />}
+
+      
+      {images.length > 0 && !loading && <LoadMoreBtn onClick={loadMoreImages} />}
     </div>
   );
 };
