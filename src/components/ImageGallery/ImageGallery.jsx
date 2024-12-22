@@ -7,6 +7,7 @@ import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
 import ImageModal from '../ImageModal/ImageModal';
+import style from "./ImageGallery.module.css";
 
 
   const ImageGallery = ({ query }) => {
@@ -96,10 +97,10 @@ import ImageModal from '../ImageModal/ImageModal';
   }
 
   return (
-    <div>
-      <ul>
+    <div className={style.containerGallery}>
+      <ul className={style.gallery}>
         {images.map((image) => (
-          <li key={nanoid()}>
+          <li className={style.galleryItem} key={nanoid()}>
             <ImageCard image={image} onClick={() => openModal(image.urls.full, image.alt_description)} />
           </li>
         ))}
@@ -110,7 +111,7 @@ import ImageModal from '../ImageModal/ImageModal';
       {images.length > 0 && !loading && <LoadMoreBtn onClick={loadMoreImages} />}
 
       {showScrollToTop && (
-        <button onClick={scrollToTop}><FaArrowUp/></button>
+        <button className={style.scrollToTopButton} onClick={scrollToTop}><FaArrowUp/></button>
       )}
 
       <ImageModal

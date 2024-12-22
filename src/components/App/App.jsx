@@ -2,6 +2,7 @@ import SearchBar from "../SearchBar/SearchBar";
 import ImageGallery from "../ImageGallery/ImageGallery";
 import { Toaster } from 'react-hot-toast';
 import { useState } from 'react';
+import style from "./App.module.css";
 
 
 const App = () => {
@@ -13,10 +14,10 @@ const App = () => {
 
   return (
     <div>
-      <h1>Пошук зображень</h1>
+      <h1 className={style.titel}>Пошук зображень</h1>
       <SearchBar onSubmit={handleSearchSubmit}/>
       <ImageGallery query={query}/>
-      <Toaster/>
+      <Toaster className={style.toastTextCenter} />
     </div>
   );
 };

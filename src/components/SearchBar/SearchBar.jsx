@@ -1,5 +1,6 @@
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
+import style from "./SearchBar.module.css";
 
 const SearchBar = ({ onSubmit }) => {
   
@@ -17,9 +18,10 @@ const SearchBar = ({ onSubmit }) => {
   });
 
   return (
-    <header>
+    <header className={style.searchHeader}>
       <form onSubmit={formik.handleSubmit}>
         <input
+          className={style.inputSearch}
           type="text"
           name="query"
           autoComplete="off"
@@ -28,7 +30,7 @@ const SearchBar = ({ onSubmit }) => {
           value={formik.values.query}
           onChange={formik.handleChange}
         />
-        <button type="submit">Search</button>
+        <button className={style.btnSearch} type="submit">Search</button>
       </form>
     </header>
   );

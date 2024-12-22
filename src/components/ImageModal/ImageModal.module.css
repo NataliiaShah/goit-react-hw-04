@@ -1,0 +1,42 @@
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    /* Темний фон */
+    border: none;
+    padding: 0;
+    max-width: 90%;
+    max-height: 90%;
+    overflow: hidden;
+    z-index: 9999;
+}
+
+.containerModal {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.image {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    /* Зберігає пропорції зображення */
+    border-radius: 8px;
+}
+
+.missing {
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: rgba(0, 0, 0, 0.6);
+    /* Напівпрозорий фон */
+    border-radius: 8px;
+    max-width: 100%;
+}

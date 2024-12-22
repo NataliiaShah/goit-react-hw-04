@@ -1,0 +1,52 @@
+.containerGallery {
+    padding: 0 15px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 20px;
+    justify-content: center;
+
+    margin-bottom: 20px;
+}
+
+.galleryItem {
+    margin-left: 20px;
+    transition: transform .3s;
+}
+
+.galleryItem:hover,
+.galleryItem:focus {
+    box-shadow: 0 1px 6px #2e2f4214, 0 1px 1px #2e2f4229, 0 2px 1px #2e2f4214;
+    transform: scale(1.05);
+    cursor: zoom-in;
+}
+
+.scrollToTopButton{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #2d313f;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    padding: 15px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+    
+.scrollToTopButton:hover {
+    background-color: #5c6172;
+    transform: translateY(-3px);
+}
+
+.scrollToTopButton:active {
+    transform: translateY(1px);
+            
+}

@@ -1,8 +1,12 @@
+import style from "./LoadMoreBtn.module.css";
+
 const LoadMoreBtn = ({ onClick }) => {
   return (
-    <button onClick={onClick}>
+    <div className={style.btnThumb}>
+    <button className={style.btnLoad} onClick={onClick}>
       Load more
     </button>
+    </div>
   );
 };
 
