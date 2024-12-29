@@ -1,0 +1,1 @@
+export const UNSPLASH_API_KEY = '2N1SVW6p-h7zTwIX34mVl0ZMU6_-eMpnOii3YhNjMn0';
